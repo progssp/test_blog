@@ -12,7 +12,12 @@ use App\Models\Post;
 
 class AppController extends Controller
 {
+
+    
     public function login(Request $request){
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: *');
+        header('Access-Control-Allow-Headers: *');
         $email = $request->email;
         $password = $request->password;
         
@@ -44,10 +49,13 @@ class AppController extends Controller
         
      
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json('The provided credentials are incorrect.');
+            return response()->json(['status'=>false,'msg'=>'The provided credentials are incorrect.']);
         }
      
-        return $user->createToken($request->email);
+        return response()->json([
+            'status'=>true,
+            'msg'=>$user->createToken($request->email)
+        ]);
     }
 
 
@@ -372,6 +380,7 @@ class AppController extends Controller
 
 
     public function get_csrf_token(){
+        header('Access-Control-Allow-Origin: *');
         return response()->json(csrf_token());
     }
 }
